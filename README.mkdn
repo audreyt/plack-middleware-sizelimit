@@ -18,7 +18,11 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 # DESCRIPTION
 
 This middleware is a port of the excellent [Apache::SizeLimit](http://search.cpan.org/perldoc?Apache::SizeLimit) module
-for multi-process Plack servers, such as [Starman](http://search.cpan.org/perldoc?Starman) and [Starlet](http://search.cpan.org/perldoc?Starlet).
+for multi-process Plack servers, such as [Starman](http://search.cpan.org/perldoc?Starman), [Starlet](http://search.cpan.org/perldoc?Starlet) and `uWSGI`.
+
+This middleware only works when the environment `psgix.harakiri.supported` is
+set to a true value by the Plack server.  If it's set to false, then this
+middleware simply does nothing.
 
 # CONFIGURATIONS
 
@@ -47,7 +51,7 @@ The maximum size of the process, including both shared and unshared memory.
 
 Since checking the process size can take a few system calls on some
 platforms (e.g. linux), you may specify this option to check the process
-size every N requests.
+size every _N_ requests.
 
 # SEE ALSO
 
@@ -60,7 +64,7 @@ size every N requests.
 # CC0 1.0 Universal
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
-or neighboring rights to App-Uni.
+or neighboring rights to Plack-Middleware-SizeLimit.
 
 This work is published from Taiwan.
 

@@ -29,13 +29,13 @@ sub call {
 
     my $res = $self->app->($env);
 
-    if (my $interval = $self->check_every_n_requests) {
-        my $pinc = $self->get_and_pinc_request_count;
-        return $res if ($pinc % $interval);
-    }
+    if ($env->{'psgix.harakiri.supported'}) {
+        if (my $interval = $self->check_every_n_requests) {
+            my $pinc = $self->get_and_pinc_request_count;
+            return $res if ($pinc % $interval);
+        }
 
-    if ($self->_limits_are_exceeded) {
-        $env->{'psgix.harakiri'} = 1;
+        $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
     }
 
     return $res;
@@ -64,7 +64,11 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 =head1 DESCRIPTION
 
 This middleware is a port of the excellent L<Apache::SizeLimit> module
-for multi-process Plack servers, such as L<Starman> and L<Starlet>.
+for multi-process Plack servers, such as L<Starman>, L<Starlet> and C<uWSGI>.
+
+This middleware only works when the environment C<psgix.harakiri.supported> is
+set to a true value by the Plack server.  If it's set to false, then this
+middleware simply does nothing.
 
 =head1 CONFIGURATIONS
 
@@ -95,7 +99,7 @@ The maximum size of the process, including both shared and unshared memory.
 
 Since checking the process size can take a few system calls on some
 platforms (e.g. linux), you may specify this option to check the process
-size every N requests.
+size every I<N> requests.
 
 =back
 
@@ -110,7 +114,7 @@ L<Starman>, L<Starlet>
 =head1 CC0 1.0 Universal
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
-or neighboring rights to App-Uni.
+or neighboring rights to Plack-Middleware-SizeLimit.
 
 This work is published from Taiwan.
 

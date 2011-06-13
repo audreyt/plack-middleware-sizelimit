@@ -16,7 +16,11 @@ SYNOPSIS
 
 DESCRIPTION
     This middleware is a port of the excellent Apache::SizeLimit module for
-    multi-process Plack servers, such as Starman and Starlet.
+    multi-process Plack servers, such as Starman, Starlet and "uWSGI".
+
+    This middleware only works when the environment
+    "psgix.harakiri.supported" is set to a true value by the Plack server.
+    If it's set to false, then this middleware simply does nothing.
 
 CONFIGURATIONS
     max_unshared_size_in_kb
@@ -41,7 +45,7 @@ CONFIGURATIONS
     check_every_n_requests
         Since checking the process size can take a few system calls on some
         platforms (e.g. linux), you may specify this option to check the
-        process size every N requests.
+        process size every *N* requests.
 
 SEE ALSO
     Starman, Starlet
@@ -51,7 +55,7 @@ AUTHORS
 
 CC0 1.0 Universal
     To the extent possible under law, 唐鳳 has waived all copyright and
-    related or neighboring rights to App-Uni.
+    related or neighboring rights to Plack-Middleware-SizeLimit.
 
     This work is published from Taiwan.
 

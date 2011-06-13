@@ -50,17 +50,16 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 
 =head1 SYNOPSIS
 
-  use Plack::Builder;
+    use Plack::Builder;
 
-  builder {
-      enable "Plack::Middleware::SizeLimit",
-          max_unshared_size_in_kb => '4096', # 4MB
-          # min_shared_size_in_kb => '8192', # 8MB
-          # max_process_size_in_kb => '16384', # 16MB
-          check_every_n_requests => 2;
-      $app;
-  };
-
+    builder {
+        enable "Plack::Middleware::SizeLimit",
+            max_unshared_size_in_kb => '4096', # 4MB
+            # min_shared_size_in_kb => '8192', # 8MB
+            # max_process_size_in_kb => '16384', # 16MB
+            check_every_n_requests => 2;
+        $app;
+    };
 
 =head1 DESCRIPTION
 

@@ -1,0 +1,69 @@
+# NAME
+
+Plack::Middleware::SizeLimit - Terminate processes if they grow too large
+
+# SYNOPSIS
+
+  use Plack::Builder;
+
+  builder {
+      enable "Plack::Middleware::SizeLimit",
+          max_unshared_size_in_kb => '4096', # 4MB
+          # min_shared_size_in_kb => '8192', # 8MB
+          # max_process_size_in_kb => '16384', # 16MB
+          check_every_n_requests => 2;
+      $app;
+  };
+
+
+
+# DESCRIPTION
+
+This middleware is a port of the excellent [Apache::SizeLimit](http://search.cpan.org/perldoc?Apache::SizeLimit) module
+for multi-process Plack servers, such as [Starman](http://search.cpan.org/perldoc?Starman) and [Starlet](http://search.cpan.org/perldoc?Starlet).
+
+# CONFIGURATIONS
+
+- max_unshared_size_in_kb
+
+The maximum amount of _unshared_ memory the process can use;
+usually this option is all one needs.
+
+Experience on one heavily trafficked [mod_perl](http://search.cpan.org/perldoc?mod_perl) site showed that
+setting this option and leaving the others unset is the most effective
+policy.
+
+This is because it only kills off processes that are truly using too much
+physical RAM, allowing most processes to live longer and reducing the
+process churn rate.
+
+- min_shared_size_in_kb
+
+Sets the minimum amount of shared memory the process must have.
+
+- max_process_size_in_kb
+
+The maximum size of the process, including both shared and unshared memory.
+
+- check_every_n_requests
+
+Since checking the process size can take a few system calls on some
+platforms (e.g. linux), you may specify this option to check the process
+size every N requests.
+
+# SEE ALSO
+
+[Starman](http://search.cpan.org/perldoc?Starman), [Starlet](http://search.cpan.org/perldoc?Starlet)
+
+# AUTHORS
+
+唐鳳 <cpan@audreyt.org>
+
+# CC0 1.0 Universal
+
+To the extent possible under law, 唐鳳 has waived all copyright and related
+or neighboring rights to App-Uni.
+
+This work is published from Taiwan.
+
+[http://creativecommons.org/publicdomain/zero/1.0](http://creativecommons.org/publicdomain/zero/1.0)

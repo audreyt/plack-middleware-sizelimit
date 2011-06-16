@@ -29,13 +29,13 @@ sub call {
 
     my $res = $self->app->($env);
 
-    if ($env->{'psgix.harakiri.supported'}) {
+    if ($env->{'psgix.harakiri'}) {
         if (my $interval = $self->check_every_n_requests) {
             my $pinc = $self->get_and_pinc_request_count;
             return $res if ($pinc % $interval);
         }
 
-        $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
+        $env->{'psgix.harakiri.commit'} = $self->_limits_are_exceeded;
     }
 
     return $res;

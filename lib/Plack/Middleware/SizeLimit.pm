@@ -44,6 +44,8 @@ sub call {
 1;
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 Plack::Middleware::SizeLimit - Terminate processes if they grow too large

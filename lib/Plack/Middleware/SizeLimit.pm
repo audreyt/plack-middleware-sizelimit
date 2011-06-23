@@ -68,7 +68,7 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 This middleware is a port of the excellent L<Apache::SizeLimit> module
 for multi-process Plack servers, such as L<Starman>, L<Starlet> and C<uWSGI>.
 
-This middleware only works when the environment C<psgix.harakiri.supported> is
+This middleware only works when the environment C<psgix.harakiri> is
 set to a true value by the Plack server.  If it's set to false, then this
 middleware simply does nothing.
 

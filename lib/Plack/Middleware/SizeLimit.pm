@@ -1,8 +1,7 @@
 package Plack::Middleware::SizeLimit;
-
+use 5.008;
 use strict;
 use warnings;
-use 5.008;
 use parent qw(
     Plack::Middleware
     Process::SizeLimit::Core
@@ -14,7 +13,7 @@ use Plack::Util::Accessor qw(
     check_every_n_requests
 );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub prepare_app {
     my $self = shift;
@@ -29,13 +28,20 @@ sub call {
 
     my $res = $self->app->($env);
 
-    if ($env->{'psgix.harakiri'}) {
-        if (my $interval = $self->check_every_n_requests) {
-            my $pinc = $self->get_and_pinc_request_count;
-            return $res if ($pinc % $interval);
-        }
+    next unless $env->{'psgix.harakiri'} or $env->{'psgix.harakiri.supported'};
 
+    if (my $interval = $self->check_every_n_requests) {
+        my $pinc = $self->get_and_pinc_request_count;
+        return $res if ($pinc % $interval);
+    }
+
+    if ($env->{'psgix.harakiri'}) {
+        # Canonical implementation (Starman 0.2012+)
         $env->{'psgix.harakiri.commit'} = $self->_limits_are_exceeded;
+    }
+    elsif ($env->{'psgix.harakiri.supported'}) {
+        # Legacy implementation (uWSGI)
+        $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
     }
 
     return $res;
@@ -55,11 +61,12 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
     use Plack::Builder;
 
     builder {
-        enable "Plack::Middleware::SizeLimit",
+        enable "Plack::Middleware::SizeLimit" => (
             max_unshared_size_in_kb => '4096', # 4MB
             # min_shared_size_in_kb => '8192', # 8MB
             # max_process_size_in_kb => '16384', # 16MB
-            check_every_n_requests => 2;
+            check_every_n_requests => 2
+        );
         $app;
     };
 
@@ -116,7 +123,7 @@ L<Starman>, L<Starlet>
 =head1 CC0 1.0 Universal
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
-or neighboring rights to Plack-Middleware-SizeLimit.
+or neighboring rights to L<Plack::Middleware::SizeLimit>.
 
 This work is published from Taiwan.
 

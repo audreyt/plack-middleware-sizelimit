@@ -6,7 +6,7 @@ SYNOPSIS
         use Plack::Builder;
 
         builder {
-            enable "Plack::Middleware::SizeLimit" => (
+            enable SizeLimit => (
                 max_unshared_size_in_kb => '4096', # 4MB
                 # min_shared_size_in_kb => '8192', # 8MB
                 # max_process_size_in_kb => '16384', # 16MB

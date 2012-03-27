@@ -13,7 +13,7 @@ use Plack::Util::Accessor qw(
     check_every_n_requests
 );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub prepare_app {
     my $self = shift;
@@ -28,7 +28,7 @@ sub call {
 
     my $res = $self->app->($env);
 
-    next unless $env->{'psgix.harakiri'} or $env->{'psgix.harakiri.supported'};
+    return $res unless $env->{'psgix.harakiri'} or $env->{'psgix.harakiri.supported'};
 
     if (my $interval = $self->check_every_n_requests) {
         my $pinc = $self->get_and_pinc_request_count;

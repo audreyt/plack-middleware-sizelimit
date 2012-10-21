@@ -13,7 +13,7 @@ use Plack::Util::Accessor qw(
     check_every_n_requests
 );
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub prepare_app {
     my $self = shift;

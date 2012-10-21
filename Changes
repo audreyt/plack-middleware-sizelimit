@@ -1,3 +1,7 @@
+[Changes for 0.05 - Sun Oct 21 21:44:48 CST 2012]
+
+* Rebuild with up-to-date Module::Install 1.06; no functional changes.
+
 [Changes for 0.04 - Tue Mar 27 17:11:15 CST 2012]
 
 * Restore (no-op) compatibility with non-harakiri-supporting servers.

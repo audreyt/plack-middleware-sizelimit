@@ -79,6 +79,9 @@ This middleware only works when the environment C<psgix.harakiri> is
 set to a true value by the Plack server.  If it's set to false, then this
 middleware simply does nothing.
 
+You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier versions
+ignore the flag to stop the process.
+
 =head1 CONFIGURATIONS
 
 =over 4

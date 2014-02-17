@@ -23,6 +23,9 @@ DESCRIPTION
     to a true value by the Plack server. If it's set to false, then this
     middleware simply does nothing.
 
+    You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier
+    versions ignore the flag to stop the process.
+
 CONFIGURATIONS
     max_unshared_size_in_kb
         The maximum amount of *unshared* memory the process can use; usually

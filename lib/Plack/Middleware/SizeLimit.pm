@@ -3,48 +3,64 @@ use 5.008;
 use strict;
 use warnings;
 use parent qw(
-    Plack::Middleware
-    Process::SizeLimit::Core
-);
+               Plack::Middleware
+               Process::SizeLimit::Core
+            );
 use Plack::Util::Accessor qw(
-    max_unshared_size_in_kb
-    min_shared_size_in_kb
-    max_process_size_in_kb
-    check_every_n_requests
-);
+                              max_unshared_size_in_kb
+                              min_shared_size_in_kb
+                              max_process_size_in_kb
+                              check_every_n_requests
+                              log_when_limits_exceeded
+                           );
 
 our $VERSION = '0.05';
 
 sub prepare_app {
-    my $self = shift;
-    $self->set_check_interval($self->check_every_n_requests || 1);
-    $self->set_max_process_size($self->max_process_size_in_kb);
-    $self->set_min_shared_size($self->min_shared_size_in_kb);
-    $self->set_max_unshared_size($self->max_unshared_size_in_kb);
+  my $self = shift;
+  $self->set_check_interval($self->check_every_n_requests || 1);
+  $self->set_max_process_size($self->max_process_size_in_kb);
+  $self->set_min_shared_size($self->min_shared_size_in_kb);
+  $self->set_max_unshared_size($self->max_unshared_size_in_kb);
 }
 
 sub call {
-    my ($self, $env) = @_;
+  my ($self, $env) = @_;
 
-    my $res = $self->app->($env);
+  my $res = $self->app->($env);
 
-    return $res unless $env->{'psgix.harakiri'} or $env->{'psgix.harakiri.supported'};
+  return $res unless $env->{'psgix.harakiri'} or $env->{'psgix.harakiri.supported'};
 
-    if (my $interval = $self->check_every_n_requests) {
-        my $pinc = $self->get_and_pinc_request_count;
-        return $res if ($pinc % $interval);
-    }
+  if (my $interval = $self->check_every_n_requests) {
+    my $pinc = $self->get_and_pinc_request_count;
+    return $res if ($pinc % $interval);
+  }
+
+  if ( my $limits_exceeded = $self->_limits_are_exceeded) {
 
     if ($env->{'psgix.harakiri'}) {
-        # Canonical implementation (Starman 0.2012+)
-        $env->{'psgix.harakiri.commit'} = $self->_limits_are_exceeded;
-    }
-    elsif ($env->{'psgix.harakiri.supported'}) {
-        # Legacy implementation (uWSGI)
-        $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
+      # Canonical implementation (Starman 0.2012+)
+      $env->{'psgix.harakiri.commit'} = $limits_exceeded;
+    } elsif ($env->{'psgix.harakiri.supported'}) {
+      # Legacy implementation (uWSGI)
+      $env->{'psgix.harakiri'} = $limits_exceeded;
     }
 
-    return $res;
+    if ($self->log_when_limits_exceeded) {
+      my $message = sprintf(
+                            'pid %d committed harakiri (size: %d, shared: %d, unshared: %d)',
+                            $$, $self->_check_size
+                           );
+      if (my $logger = $env->{'psgix.logger'}) {
+        $logger->( { message => $message, level => 'warn' } );
+      } else {
+        warn "$message\n";
+      }
+    }
+  }
+
+
+  return $res;
 }
 
 1;
@@ -112,6 +128,10 @@ The maximum size of the process, including both shared and unshared memory.
 Since checking the process size can take a few system calls on some
 platforms (e.g. linux), you may specify this option to check the process
 size every I<N> requests.
+
+=item log_when_limits_exceeded
+
+Log a warning when limits are exceeded
 
 =back
 

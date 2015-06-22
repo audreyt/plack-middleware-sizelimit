@@ -1,3 +1,7 @@
+[Changes for 0.06 - Mon Jun 22 18:04:00 BST 2015]
+
+* Added log_when_limits_exceeded option (rrwo)
+
 [Changes for 0.05 - Sun Oct 21 21:44:48 CST 2012]
 
 * Rebuild with up-to-date Module::Install 1.06; no functional changes.

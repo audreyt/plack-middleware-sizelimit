@@ -60,6 +60,9 @@ CONFIGURATIONS
         the server that the process is to be terminated. This is false by
         default.
 
+    log_when_limits_exceeded
+        When true, a warning will be logged when it kills off a process.
+
 SEE ALSO
     Starman, Starlet, Gazelle
 

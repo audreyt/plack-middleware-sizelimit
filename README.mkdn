@@ -18,45 +18,52 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 
 # DESCRIPTION
 
-This middleware is a port of the excellent [Apache::SizeLimit](http://search.cpan.org/perldoc?Apache::SizeLimit) module
-for multi-process Plack servers, such as [Starman](http://search.cpan.org/perldoc?Starman), [Starlet](http://search.cpan.org/perldoc?Starlet) and `uWSGI`.
+This middleware is a port of the excellent [Apache::SizeLimit](https://metacpan.org/pod/Apache::SizeLimit) module
+for multi-process Plack servers, such as [Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet) and `uWSGI`.
 
 This middleware only works when the environment `psgix.harakiri` is
 set to a true value by the Plack server.  If it's set to false, then this
 middleware simply does nothing.
 
+You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier versions
+ignore the flag to stop the process.
+
 # CONFIGURATIONS
 
 - max\_unshared\_size\_in\_kb
 
-The maximum amount of _unshared_ memory the process can use;
-usually this option is all one needs.
+    The maximum amount of _unshared_ memory the process can use;
+    usually this option is all one needs.
 
-Experience on one heavily trafficked [mod\_perl](http://search.cpan.org/perldoc?mod\_perl) site showed that
-setting this option and leaving the others unset is the most effective
-policy.
+    Experience on one heavily trafficked [mod\_perl](https://metacpan.org/pod/mod_perl) site showed that
+    setting this option and leaving the others unset is the most effective
+    policy.
 
-This is because it only kills off processes that are truly using too much
-physical RAM, allowing most processes to live longer and reducing the
-process churn rate.
+    This is because it only kills off processes that are truly using too much
+    physical RAM, allowing most processes to live longer and reducing the
+    process churn rate.
 
 - min\_shared\_size\_in\_kb
 
-Sets the minimum amount of shared memory the process must have.
+    Sets the minimum amount of shared memory the process must have.
 
 - max\_process\_size\_in\_kb
 
-The maximum size of the process, including both shared and unshared memory.
+    The maximum size of the process, including both shared and unshared memory.
 
 - check\_every\_n\_requests
 
-Since checking the process size can take a few system calls on some
-platforms (e.g. linux), you may specify this option to check the process
-size every _N_ requests.
+    Since checking the process size can take a few system calls on some
+    platforms (e.g. linux), you may specify this option to check the process
+    size every _N_ requests.
+
+- log\_when\_limits\_exceeded
+
+    When true, a warning will be logged when it kills off a process.
 
 # SEE ALSO
 
-[Starman](http://search.cpan.org/perldoc?Starman), [Starlet](http://search.cpan.org/perldoc?Starlet)
+[Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet)
 
 # AUTHORS
 
@@ -65,7 +72,7 @@ size every _N_ requests.
 # CC0 1.0 Universal
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
-or neighboring rights to [Plack::Middleware::SizeLimit](http://search.cpan.org/perldoc?Plack::Middleware::SizeLimit).
+or neighboring rights to [Plack::Middleware::SizeLimit](https://metacpan.org/pod/Plack::Middleware::SizeLimit).
 
 This work is published from Taiwan.
 

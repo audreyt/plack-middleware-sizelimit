@@ -23,8 +23,8 @@ DESCRIPTION
     to a true value by the Plack server. If it's set to false, then this
     middleware simply does nothing.
 
-    You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier
-    versions ignore the flag to stop the process.
+    You must use at least version 0.2006 of Starman, and 0.19 of Starlet.
+    Earlier versions ignore the flag to stop the process.
 
 CONFIGURATIONS
     max_unshared_size_in_kb
@@ -50,6 +50,9 @@ CONFIGURATIONS
         Since checking the process size can take a few system calls on some
         platforms (e.g. linux), you may specify this option to check the
         process size every *N* requests.
+
+    log_when_limits_exceeded
+        When true, a warning will be logged when it kills off a process.
 
 SEE ALSO
     Starman, Starlet

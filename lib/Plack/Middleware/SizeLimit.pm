@@ -11,9 +11,10 @@ use Plack::Util::Accessor qw(
     min_shared_size_in_kb
     max_process_size_in_kb
     check_every_n_requests
+    log_when_limits_exceeded
 );
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub prepare_app {
     my $self = shift;
@@ -35,13 +36,27 @@ sub call {
         return $res if ($pinc % $interval);
     }
 
+    my $harakiri;
     if ($env->{'psgix.harakiri'}) {
         # Canonical implementation (Starman 0.2012+)
-        $env->{'psgix.harakiri.commit'} = $self->_limits_are_exceeded;
+        $harakiri = $env->{'psgix.harakiri.commit'} = $self->_limits_are_exceeded;
     }
     elsif ($env->{'psgix.harakiri.supported'}) {
         # Legacy implementation (uWSGI)
-        $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
+        $harakiri = $env->{'psgix.harakiri'} = $self->_limits_are_exceeded;
+    }
+
+    if ($harakiri && $self->log_when_limits_exceeded) {
+        my $message = sprintf(
+            'pid %d committed harakiri (size: %d, shared: %d, unshared: %d) at %s',
+            $$, $self->_check_size, $env->{REQUEST_URI},
+        );
+        if (my $logger = $env->{'psgix.logger'}) {
+            $logger->( { message => $message, level => 'warn' } );
+        }
+        else {
+            warn "$message\n";
+        }
     }
 
     return $res;
@@ -112,6 +127,10 @@ The maximum size of the process, including both shared and unshared memory.
 Since checking the process size can take a few system calls on some
 platforms (e.g. linux), you may specify this option to check the process
 size every I<N> requests.
+
+=item log_when_limits_exceeded
+
+When true, a warning will be logged when it kills off a process.
 
 =back
 

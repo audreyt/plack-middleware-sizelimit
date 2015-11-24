@@ -80,7 +80,8 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
             max_unshared_size_in_kb => '4096', # 4MB
             # min_shared_size_in_kb => '8192', # 8MB
             # max_process_size_in_kb => '16384', # 16MB
-            check_every_n_requests => 2
+            check_every_n_requests => 2,
+            log_when_limits_exceeded => 1
         );
         $app;
     };
@@ -88,14 +89,15 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 =head1 DESCRIPTION
 
 This middleware is a port of the excellent L<Apache::SizeLimit> module
-for multi-process Plack servers, such as L<Starman>, L<Starlet> and C<uWSGI>.
+for multi-process Plack servers, such as L<Starman>, L<Starlet>,
+L<Gazelle> and C<uWSGI>.
 
 This middleware only works when the environment C<psgix.harakiri> is
 set to a true value by the Plack server.  If it's set to false, then this
 middleware simply does nothing.
 
-You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier versions
-ignore the flag to stop the process.
+You must use at least version 0.2006 of Starman (July 2010), and 0.19 of
+Starlet (June 2013). Earlier versions ignore the flag to stop the process.
 
 =head1 CONFIGURATIONS
 
@@ -124,25 +126,29 @@ The maximum size of the process, including both shared and unshared memory.
 
 =item check_every_n_requests
 
-Since checking the process size can take a few system calls on some
-platforms (e.g. linux), you may specify this option to check the process
-size every I<N> requests.
+Since checking the process size can take a few system calls on some platforms
+(e.g. linux), you may specify this option to check the process size every I<N>
+requests. The default value for I<N> is 1, i.e. to check after the processing
+of every request.
 
 =item log_when_limits_exceeded
 
-When true, a warning will be logged when it kills off a process.
+When true, the middleware will log a warning whenever it signals to the server
+that the process is to be terminated.  This is false by default.
 
 =back
 
 =head1 SEE ALSO
 
-L<Starman>, L<Starlet>
+L<Starman>, L<Starlet>, L<Gazelle>
 
 =head1 AUTHORS
 
 唐鳳 E<lt>cpan@audreyt.orgE<gt>
 
-=head1 CC0 1.0 Universal
+=head1 LICENSE
+
+This work is under the B<CC0 1.0 Universal> license.
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
 or neighboring rights to L<Plack::Middleware::SizeLimit>.

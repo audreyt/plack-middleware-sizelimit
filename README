@@ -56,8 +56,9 @@ CONFIGURATIONS
         i.e. to check after the processing of every request.
 
     log_when_limits_exceeded
-        When true, the middleware will log a warning whenever it terminates
-        a process. This is false by default.
+        When true, the middleware will log a warning whenever it signals to
+        the server that the process is to be terminated. This is false by
+        default.
 
 SEE ALSO
     Starman, Starlet, Gazelle

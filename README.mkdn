@@ -11,7 +11,8 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
             max_unshared_size_in_kb => '4096', # 4MB
             # min_shared_size_in_kb => '8192', # 8MB
             # max_process_size_in_kb => '16384', # 16MB
-            check_every_n_requests => 2
+            check_every_n_requests => 2,
+            log_when_limits_exceeded => 1
         );
         $app;
     };
@@ -19,14 +20,15 @@ Plack::Middleware::SizeLimit - Terminate processes if they grow too large
 # DESCRIPTION
 
 This middleware is a port of the excellent [Apache::SizeLimit](https://metacpan.org/pod/Apache::SizeLimit) module
-for multi-process Plack servers, such as [Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet) and `uWSGI`.
+for multi-process Plack servers, such as [Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet),
+[Gazelle](https://metacpan.org/pod/Gazelle) and `uWSGI`.
 
 This middleware only works when the environment `psgix.harakiri` is
 set to a true value by the Plack server.  If it's set to false, then this
 middleware simply does nothing.
 
-You must use at least version 0.2006 of Starman, and 0.19 of Starlet.  Earlier versions
-ignore the flag to stop the process.
+You must use at least version 0.2006 of Starman (July 2010), and 0.19 of
+Starlet (June 2013). Earlier versions ignore the flag to stop the process.
 
 # CONFIGURATIONS
 
@@ -53,23 +55,27 @@ ignore the flag to stop the process.
 
 - check\_every\_n\_requests
 
-    Since checking the process size can take a few system calls on some
-    platforms (e.g. linux), you may specify this option to check the process
-    size every _N_ requests.
+    Since checking the process size can take a few system calls on some platforms
+    (e.g. linux), you may specify this option to check the process size every _N_
+    requests. The default value for _N_ is 1, i.e. to check after the processing
+    of every request.
 
 - log\_when\_limits\_exceeded
 
-    When true, a warning will be logged when it kills off a process.
+    When true, the middleware will log a warning whenever it signals to the server
+    that the process is to be terminated.  This is false by default.
 
 # SEE ALSO
 
-[Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet)
+[Starman](https://metacpan.org/pod/Starman), [Starlet](https://metacpan.org/pod/Starlet), [Gazelle](https://metacpan.org/pod/Gazelle)
 
 # AUTHORS
 
-唐鳳 <cpan@audreyt.org>
+唐鳳 &lt;cpan@audreyt.org>
 
-# CC0 1.0 Universal
+# LICENSE
+
+This work is under the **CC0 1.0 Universal** license.
 
 To the extent possible under law, 唐鳳 has waived all copyright and related
 or neighboring rights to [Plack::Middleware::SizeLimit](https://metacpan.org/pod/Plack::Middleware::SizeLimit).

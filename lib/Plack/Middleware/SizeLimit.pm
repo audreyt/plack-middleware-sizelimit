@@ -14,7 +14,7 @@ use Plack::Util::Accessor qw(
     log_when_limits_exceeded
 );
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub prepare_app {
     my $self = shift;

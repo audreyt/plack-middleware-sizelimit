@@ -1,3 +1,7 @@
+[Changes for 0.08 - Wed Nov 25 20:24:34 CST 2015]
+
+* Add META.yml, update documentation, add a couple of tests (bk)
+
 [Changes for 0.06 - Mon Jun 22 18:04:00 BST 2015]
 
 * Added log_when_limits_exceeded option (rrwo)

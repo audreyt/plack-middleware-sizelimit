@@ -14,7 +14,7 @@ use Plack::Util::Accessor qw(
     log_when_limits_exceeded
 );
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub prepare_app {
     my $self = shift;
@@ -144,7 +144,7 @@ L<Starman>, L<Starlet>, L<Gazelle>
 
 =head1 AUTHORS
 
-唐鳳 E<lt>cpan@audreyt.orgE<gt>
+Audrey Tang E<lt>cpan@audreyt.orgE<gt>
 
 =head1 LICENSE
 

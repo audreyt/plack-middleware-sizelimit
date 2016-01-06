@@ -1,3 +1,7 @@
+[Changes for 0.09 - Wed Jan  6 21:22:42 CST 2016]
+
+* Fix build error; no funtional changes. (fgabolde)
+
 [Changes for 0.08 - Wed Nov 25 20:24:34 CST 2015]
 
 * Add META.yml, update documentation, add a couple of tests (bk)
